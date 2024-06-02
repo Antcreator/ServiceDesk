@@ -1,0 +1,6 @@
+@ServiceDesk.Notifications_HostAddress = http://localhost:5016
+
+GET {{ServiceDesk.Notifications_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

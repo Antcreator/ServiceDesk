@@ -1,0 +1,6 @@
+@ServiceDesk.Users_HostAddress = http://localhost:5105
+
+GET {{ServiceDesk.Users_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
