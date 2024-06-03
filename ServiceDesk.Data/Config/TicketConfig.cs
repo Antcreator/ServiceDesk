@@ -18,13 +18,13 @@ namespace ServiceDesk.Data.Config
 
             builder
                 .HasOne(e => e.Reporter)
-                .WithMany()
+                .WithMany(e => e.Issues)
                 .HasForeignKey(e => e.ReporterId)
                 .IsRequired();
 
             builder
                 .HasOne(e => e.Assignee)
-                .WithMany()
+                .WithMany(e => e.Tasks)
                 .HasForeignKey(e => e.AssigneeId);
         }
     }

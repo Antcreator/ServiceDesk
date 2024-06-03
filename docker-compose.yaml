@@ -1,0 +1,25 @@
+version: "2.9"
+
+services:
+  
+  service-desk-server:
+    image: postgres:latest
+    container_name: service-desk-server
+    healthcheck:
+      test: pg_isready
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - service-desk-server-volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=service_desk
+    ports:
+      - '5400:5432'
+
+volumes:
+
+  service-desk-server-volume:
+    driver: local

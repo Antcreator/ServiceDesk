@@ -9,4 +9,7 @@ public class User : Entity
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public required UserRole Role { get; set; }
+
+    public ICollection<Ticket> Issues = new List<Ticket>();
+    public ICollection<Ticket> Tasks = new List<Ticket>();
 }
