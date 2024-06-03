@@ -8,6 +8,7 @@ namespace ServiceDesk.Data.Context
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Document> Documents { get; set; }
 
         public PersistenceContext(DbContextOptions<PersistenceContext> options) : base(options) { }
 
@@ -15,6 +16,7 @@ namespace ServiceDesk.Data.Context
         {
             modelBuilder.ApplyConfiguration(new UserConfig());
             modelBuilder.ApplyConfiguration(new TicketConfig());
+            modelBuilder.ApplyConfiguration(new DocumentConfig());
         }
     }
 }

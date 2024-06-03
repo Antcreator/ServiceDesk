@@ -8,15 +8,8 @@ namespace ServiceDesk.Tickets.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TicketController : ControllerBase
+public class TicketController(PersistenceContext persistence) : ControllerBase
 {
-    private readonly PersistenceContext _persistence;
-
-    public TicketController(PersistenceContext persistence)
-    {
-        _persistence = persistence;
-    }
-    
     [HttpPost]
     public async Task<IActionResult> CreateTicket([FromBody] CreateTicketDto createTicketDto)
     {
@@ -32,8 +25,8 @@ public class TicketController : ControllerBase
             ReporterId = createTicketDto.ReporterId,
         };
 
-        await _persistence.Tickets.AddAsync(ticket);
-        await _persistence.SaveChangesAsync();
+        await persistence.Tickets.AddAsync(ticket);
+        await persistence.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetTicketDetails), new { id = ticket.Id }, ticket);
     }
@@ -41,7 +34,7 @@ public class TicketController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<Results<Ok<Ticket>, NotFound<string>>> GetTicketDetails([FromRoute] Guid id)
     {
-        return await _persistence.Tickets.FindAsync(id) switch
+        return await persistence.Tickets.FindAsync(id) switch
         {
             var ticket when ticket != null => TypedResults.Ok(ticket),
             _ => TypedResults.NotFound($"{nameof(Ticket)} not found")

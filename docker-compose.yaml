@@ -2,9 +2,9 @@ version: "2.9"
 
 services:
   
-  service-desk-server:
+  service-desk-db:
     image: postgres:latest
-    container_name: service-desk-server
+    container_name: service-desk-db
     healthcheck:
       test: pg_isready
       interval: 15s
