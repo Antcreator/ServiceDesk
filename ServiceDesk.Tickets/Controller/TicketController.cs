@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Tickets.Model;
@@ -34,7 +35,12 @@ public class TicketController(PersistenceContext persistence) : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<Results<Ok<Ticket>, NotFound<string>>> GetTicketDetails([FromRoute] Guid id)
     {
-        return await persistence.Tickets.FindAsync(id) switch
+        return await persistence.Tickets
+                .Include(e => e.Reporter)
+                .Include(e => e.Assignee)
+                .Include(e => e.Documents)
+                .Where(e => e.Id == id)
+                .FirstOrDefaultAsync() switch
         {
             var ticket when ticket != null => TypedResults.Ok(ticket),
             _ => TypedResults.NotFound($"{nameof(Ticket)} not found")
