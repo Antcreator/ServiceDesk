@@ -7,7 +7,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("Database")
-                       ?? throw new ArgumentNullException("Database connection string is required");
+                       ?? throw new InvalidOperationException("Database connection string is required");
 
 builder.Services.AddPersistenceContext(connectionString);
 

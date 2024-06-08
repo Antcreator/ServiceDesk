@@ -10,6 +10,14 @@ namespace ServiceDesk.Documents.Controller;
 [Route("api/[controller]")]
 public class DocumentController(PersistenceContext persistence, IWebHostEnvironment env) : ControllerBase
 {
+    [HttpGet]
+    public IActionResult GetDocumentList()
+    {
+        var documents = persistence.Documents.ToList();
+
+        return Ok(documents);
+    }
+    
     [HttpPost]
     public async Task<IActionResult> CreateDocument([FromForm] CreateDocumentDto createDocumentDto)
     {
@@ -25,7 +33,8 @@ public class DocumentController(PersistenceContext persistence, IWebHostEnvironm
             File = Path.GetRandomFileName(),
         };
 
-        var upload = Path.Combine(env.WebRootPath, document.File);
+        var file = document.File + Path.GetExtension(createDocumentDto.Attachment.FileName);
+        var upload = Path.Combine(env.WebRootPath, "uploads", file);
         using var stream = System.IO.File.Create(upload);
 
         await createDocumentDto.Attachment.CopyToAsync(stream);
