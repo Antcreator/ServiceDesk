@@ -17,9 +17,23 @@ services:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=service_desk
     ports:
-      - '5400:5432'
+      - 5400:5432
+
+  service-desk-azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: service-desk-azurite
+    command: 'azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --skipApiVersionCheck'
+    volumes:
+      - service-desk-azurite-volume:/data
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
 
 volumes:
 
   service-desk-server-volume:
+    driver: local
+  
+  service-desk-azurite-volume:
     driver: local

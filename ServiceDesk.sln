@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDesk.Gateway", "Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDesk.Data", "ServiceDesk.Data\ServiceDesk.Data.csproj", "{F5CC9C52-94EA-41CB-994E-22AA2A1D0349}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDesk.Util", "ServiceDesk.Util\ServiceDesk.Util.csproj", "{75CAAF59-43CB-4B6C-9B43-D8D6D2BCCD39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{F5CC9C52-94EA-41CB-994E-22AA2A1D0349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5CC9C52-94EA-41CB-994E-22AA2A1D0349}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5CC9C52-94EA-41CB-994E-22AA2A1D0349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75CAAF59-43CB-4B6C-9B43-D8D6D2BCCD39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75CAAF59-43CB-4B6C-9B43-D8D6D2BCCD39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75CAAF59-43CB-4B6C-9B43-D8D6D2BCCD39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75CAAF59-43CB-4B6C-9B43-D8D6D2BCCD39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
