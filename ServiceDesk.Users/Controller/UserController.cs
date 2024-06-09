@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Users.Model;
@@ -10,6 +11,14 @@ namespace ServiceDesk.Users.Controller;
 [ApiController]
 public class UserController(PersistenceContext persistence) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetUserList()
+    {
+        var users = await persistence.Users.ToListAsync();
+
+        return Ok(users);
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
     {

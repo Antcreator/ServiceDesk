@@ -6,14 +6,14 @@ namespace ServiceDesk.Tickets.Model;
 public record CreateTicketDto
 {
     [Required]
-    [JsonPropertyName("subject")]
     public required string Subject { get; set; }
     
     [Required]
-    [JsonPropertyName("description")]
     public required string Description { get; set; }
     
     [Required]
-    [JsonPropertyName("reporterId")]
     public Guid ReporterId { get; set; }
+    
+    [Required]
+    public required IFormFile Attachment { get; set; }
 }

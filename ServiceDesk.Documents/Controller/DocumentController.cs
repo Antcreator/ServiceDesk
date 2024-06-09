@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Documents.Model;
@@ -11,9 +12,9 @@ namespace ServiceDesk.Documents.Controller;
 public class DocumentController(PersistenceContext persistence, IWebHostEnvironment env) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetDocumentList()
+    public async Task<IActionResult> GetDocumentList()
     {
-        var documents = persistence.Documents.ToList();
+        var documents = await persistence.Documents.ToListAsync();
 
         return Ok(documents);
     }

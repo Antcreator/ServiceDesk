@@ -1,4 +1,5 @@
 using ServiceDesk.Data.Context;
+using ServiceDesk.Tickets.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,9 +8,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("Database") 
-                       ?? throw new ArgumentNullException("Database connection string is required");
+    ?? throw new InvalidOperationException("Database connection string is required");
 
 builder.Services.AddPersistenceContext(connectionString);
+builder.Services.AddHttpClient<DocumentService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5401/api/Document");
+});
 
 var app = builder.Build();
 
