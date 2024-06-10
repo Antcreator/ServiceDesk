@@ -1,11 +1,15 @@
+using ServiceDesk.Notifications;
 using ServiceDesk.Notifications.Service;
 using ServiceDesk.Util;
 
-var host = Host.CreateDefaultBuilder(args).ConfigureServices(services =>
-    {
-        services.AddSingleton<QueueService>();
-        services.AddHostedService<QueueWorkerService>();
-    })
-    .Build();
+var builder = WebApplication.CreateBuilder(args);
 
-await host.RunAsync();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<QueueService>();
+builder.Services.AddHostedService<QueueWorkerService>();
+
+var app = builder.Build();
+
+app.MapHub<NotificationHub>("/api/notify");
+
+await app.RunAsync();

@@ -1,9 +1,9 @@
 using ServiceDesk.Data.Context;
 using ServiceDesk.Tickets.Service;
+using ServiceDesk.Util;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -13,8 +13,10 @@ var connectionString = builder.Configuration.GetConnectionString("Database")
 builder.Services.AddPersistenceContext(connectionString);
 builder.Services.AddHttpClient<DocumentService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5401/api/Document");
+    client.BaseAddress = new Uri("http://localhost:5401/api/Document/");
 });
+builder.Services.AddSingleton<QueueService>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 

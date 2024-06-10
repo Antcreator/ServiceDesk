@@ -11,7 +11,7 @@ public class DocumentService(HttpClient http)
             { new StringContent(ticket.ToString()), "TicketId" }
         };
 
-        var response = await http.PostAsync("/", multiFormData);
+        var response = await http.PostAsync("", multiFormData);
 
         response.EnsureSuccessStatusCode();
     }

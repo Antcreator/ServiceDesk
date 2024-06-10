@@ -5,12 +5,13 @@ using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Tickets.Model;
 using ServiceDesk.Tickets.Service;
+using ServiceDesk.Util;
 
 namespace ServiceDesk.Tickets.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TicketController(PersistenceContext persistence, DocumentService documentService) : ControllerBase
+public class TicketController(PersistenceContext persistence, DocumentService documentService, QueueService queue) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateTicket([FromForm] CreateTicketDto createTicketDto)
@@ -30,6 +31,7 @@ public class TicketController(PersistenceContext persistence, DocumentService do
         await persistence.Tickets.AddAsync(ticket);
         await persistence.SaveChangesAsync();
         await documentService.UploadDocument(createTicketDto.Attachment, ticket.Id);
+        await queue.SendMessageAsync(ticket);
 
         return CreatedAtAction(nameof(GetTicketDetails), new { id = ticket.Id }, ticket);
     }

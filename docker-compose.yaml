@@ -19,6 +19,20 @@ services:
     ports:
       - 5400:5432
 
+  service-desk-db-admin:
+    image: dpage/pgadmin4
+    container_name: service-desk-db-admin
+    volumes:
+      - service-desk-db-admin-volume:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@servicedesk.com
+      - PGADMIN_DEFAULT_PASSWORD=1234
+    ports:
+      - 5407:80
+    depends_on:
+      service-desk-db:
+        condition: service_healthy
+
   service-desk-azurite:
     image: mcr.microsoft.com/azure-storage/azurite
     container_name: service-desk-azurite
@@ -33,6 +47,9 @@ services:
 volumes:
 
   service-desk-server-volume:
+    driver: local
+  
+  service-desk-db-admin-volume:
     driver: local
   
   service-desk-azurite-volume:
