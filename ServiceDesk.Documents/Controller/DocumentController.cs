@@ -32,6 +32,8 @@ public class DocumentController(PersistenceContext persistence, IWebHostEnvironm
             TicketId = createDocumentDto.TicketId,
             Title = createDocumentDto.Attachment.FileName,
             File = Path.GetRandomFileName(),
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow,
         };
 
         var file = document.File + Path.GetExtension(createDocumentDto.Attachment.FileName);

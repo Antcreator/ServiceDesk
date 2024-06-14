@@ -26,6 +26,8 @@ public class TicketController(PersistenceContext persistence, DocumentService do
             Subject = createTicketDto.Subject,
             Description = createTicketDto.Description,
             ReporterId = createTicketDto.ReporterId,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow,
         };
 
         await persistence.Tickets.AddAsync(ticket);
