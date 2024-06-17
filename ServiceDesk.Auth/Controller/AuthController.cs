@@ -3,7 +3,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ServiceDesk.Auth.Settings;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Util.Service;
 
@@ -11,8 +13,10 @@ namespace ServiceDesk.Auth.Controller;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(PersistenceContext persistence, IConfiguration configuration, PasswordHasherService hasherService) : ControllerBase
+public class AuthController(PersistenceContext persistence, PasswordHasherService hasherService, IOptions<JwtSettings> jwtSettings) : ControllerBase
 {
+    private readonly JwtSettings jwtSettings = jwtSettings.Value;
+
     [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
@@ -29,7 +33,7 @@ public class AuthController(PersistenceContext persistence, IConfiguration confi
             return BadRequest("Email and/or password is incorrect");
         }
 
-        var keyId = configuration["Jwt:KeyId"];
+        var keyId = jwtSettings.KeyId;
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Email, loginDto.Email),
@@ -37,7 +41,7 @@ public class AuthController(PersistenceContext persistence, IConfiguration confi
         };
         var rsa = RSA.Create();
 
-        rsa.ImportFromPem(configuration["Jwt:PrivateKey"]);
+        rsa.ImportFromPem(jwtSettings.PrivateKey);
 
         var rsaKey = new RsaSecurityKey(rsa)
         {
@@ -49,8 +53,8 @@ public class AuthController(PersistenceContext persistence, IConfiguration confi
             signingCredentials: signingCredentials,
             expires: DateTime.UtcNow.AddDays(1),
             notBefore: DateTime.UtcNow,
-            audience: configuration["Jwt:Audience"],
-            issuer: configuration["Jwt:Issuer"]);
+            audience: jwtSettings.Audience,
+            issuer: jwtSettings.Issuer);
         var jws = new JwtSecurityTokenHandler().WriteToken(jwt);
 
         return Ok(jws);

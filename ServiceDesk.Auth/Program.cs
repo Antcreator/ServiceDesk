@@ -1,7 +1,16 @@
+using ServiceDesk.Auth.Settings;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Util.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder
+    .Services
+    .AddOptions<JwtSettings>()
+    .Configure<IConfiguration>((settings, config) =>
+    {
+        config.GetSection(JwtSettings.Section).Bind(settings);
+    });
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("Database") 
