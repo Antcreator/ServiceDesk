@@ -1,8 +1,9 @@
-using System.Data;
 using ServiceDesk.Data.Context;
+using ServiceDesk.Util.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddPasswordHasher();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

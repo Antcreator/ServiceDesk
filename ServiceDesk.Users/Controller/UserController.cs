@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Users.Model;
+using ServiceDesk.Util.Service;
 
 namespace ServiceDesk.Users.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(PersistenceContext persistence) : ControllerBase
+public class UserController(PersistenceContext persistence, PasswordHasherService hasherService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetUserList()
@@ -22,12 +23,13 @@ public class UserController(PersistenceContext persistence) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
     {
+        var hash = hasherService.GetHash(createUserDto.Password);
         var user = new User
         {
             FirstName = createUserDto.FirstName,
             LastName = createUserDto.LastName,
             Email = createUserDto.Email,
-            Password = createUserDto.Password,
+            Password = hash,
             Role = createUserDto.Role,
         };
 

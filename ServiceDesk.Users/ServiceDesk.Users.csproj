@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ServiceDesk.Data\ServiceDesk.Data.csproj" />
+    <ProjectReference Include="..\ServiceDesk.Util\ServiceDesk.Util.csproj" />
   </ItemGroup>
 
 </Project>

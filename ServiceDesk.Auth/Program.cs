@@ -1,4 +1,5 @@
 using ServiceDesk.Data.Context;
+using ServiceDesk.Util.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Database") 
     ?? throw new InvalidOperationException("Database connection string is required");
 
+builder.Services.AddPasswordHasher();
 builder.Services.AddPersistenceContext(connectionString);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

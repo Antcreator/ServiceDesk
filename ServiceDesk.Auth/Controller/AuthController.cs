@@ -1,23 +1,32 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ServiceDesk.Data.Context;
+using ServiceDesk.Util.Service;
 
 namespace ServiceDesk.Auth.Controller;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(PersistenceContext persistence, IConfiguration configuration) : ControllerBase
+public class AuthController(PersistenceContext persistence, IConfiguration configuration, PasswordHasherService hasherService) : ControllerBase
 {
     [HttpPost("Login")]
-    public Results<BadRequest<string>, Ok<string>> Login([FromBody] LoginDto loginDto)
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        if (!persistence.Users.Any(e => e.Email == loginDto.Email))
+        if (!ModelState.IsValid)
         {
-            return TypedResults.BadRequest("Email is incorrect");
+            return ValidationProblem(ModelState);
+        }
+
+        var user = await persistence.Users
+            .FirstOrDefaultAsync(e => e.Email.Equals(loginDto.Email));
+
+        if (user == null || !hasherService.VerifyHash(loginDto.Password, user.Password))
+        {
+            return BadRequest("Email and/or password is incorrect");
         }
 
         var keyId = configuration["Jwt:KeyId"];
@@ -44,6 +53,6 @@ public class AuthController(PersistenceContext persistence, IConfiguration confi
             issuer: configuration["Jwt:Issuer"]);
         var jws = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-        return TypedResults.Ok(jws);
+        return Ok(jws);
     }
 }

@@ -1,6 +1,13 @@
-﻿namespace ServiceDesk.Auth;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record class LoginDto
+namespace ServiceDesk.Auth;
+
+public record LoginDto
 {
-    public string Email { get; set; }
+    [Required]
+    [EmailAddress]
+    public required string Email { get; set; }
+
+    [Required]
+    public required string Password { get; set; }
 }
