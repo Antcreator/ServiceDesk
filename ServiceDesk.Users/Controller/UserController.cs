@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Users.Model;
@@ -35,6 +36,8 @@ public class UserController(PersistenceContext persistence, PasswordHasherServic
 
         await persistence.Users.AddAsync(user);
         await persistence.SaveChangesAsync();
+
+        Response.Headers.Append(HeaderNames.Baggage, "outbox=123456");
 
         return CreatedAtAction(nameof(GetUserDetails), new { id = user.Id }, user);
     }
