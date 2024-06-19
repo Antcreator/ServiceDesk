@@ -3,13 +3,11 @@ using OpenTelemetry;
 
 namespace ServiceDesk.Gateway;
 
-public class BaggageFilter : BaseProcessor<Activity>
+public class BaggageProcessFilter : BaseProcessor<Activity>
 {
     public override void OnEnd(Activity activity)
     {
-        var id = activity.GetBaggageItem("outbox");
-
-        if (string.IsNullOrWhiteSpace(id))
+        if (!activity.Baggage.Any(baggage => baggage.Key == "outbox"))
         {
             activity.ActivityTraceFlags &= ~ActivityTraceFlags.Recorded;
         }

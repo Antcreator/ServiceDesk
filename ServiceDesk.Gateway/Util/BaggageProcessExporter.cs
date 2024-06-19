@@ -4,7 +4,7 @@ using ServiceDesk.Util;
 
 namespace ServiceDesk.Gateway;
 
-public class BaggageExporter(QueueService queue) : BaseExporter<Activity>
+public class BaggageProcessExporter(QueueService queue) : BaseExporter<Activity>
 {
     public override ExportResult Export(in Batch<Activity> batch)
     {
@@ -12,9 +12,10 @@ public class BaggageExporter(QueueService queue) : BaseExporter<Activity>
 
         foreach (var activity in batch)
         {
-            var id = activity.GetBaggageItem("outbox");
-
-            queue.SendMessageAsync(id);
+            var baggage = activity.Baggage
+                .FirstOrDefault(baggage => baggage.Key == "outbox");
+            
+            queue.SendMessageAsync(baggage.Value);
         }
 
         return ExportResult.Success;

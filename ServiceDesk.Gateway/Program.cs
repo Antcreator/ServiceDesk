@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Net.Http.Headers;
-using OpenTelemetry;
 using OpenTelemetry.Trace;
 using ServiceDesk.Gateway;
 using ServiceDesk.Util;
@@ -23,30 +21,11 @@ builder
         trace.AddAspNetCoreInstrumentation();
         trace.AddHttpClientInstrumentation(options =>
         {
-            options.EnrichWithHttpResponseMessage = (activity, response) =>
-            {
-                if (response.Headers.Contains(HeaderNames.Baggage))
-                {
-                    var outbox = response.Headers
-                        .GetValues(HeaderNames.Baggage)
-                        .First()
-                        .Split("=")[1];
-
-                    activity.AddBaggage("outbox", outbox);
-                }
-            };
+            options.EnrichWithHttpResponseMessage = BaggageProcessEnricher.LoadBaggage;
         });
 
         trace.AddSource("Yarp.ReverseProxy");
-
-        trace.AddProcessor(new BaggageFilter());
-        trace.AddProcessor(services =>
-        {
-            var queue = services.GetRequiredService<QueueService>();
-            var exporter = new BaggageExporter(queue);
-
-            return new SimpleActivityExportProcessor(exporter);
-        });
+        trace.AddBaggageProcessor();
     });
 
 builder
