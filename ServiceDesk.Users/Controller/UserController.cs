@@ -27,17 +27,29 @@ public class UserController(PersistenceContext persistence, PasswordHasherServic
         var hash = hasherService.GetHash(createUserDto.Password);
         var user = new User
         {
+            Id = Guid.NewGuid(),
             FirstName = createUserDto.FirstName,
             LastName = createUserDto.LastName,
             Email = createUserDto.Email,
             Password = hash,
             Role = createUserDto.Role,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow,
+        };
+        var outbox = new Outbox
+        {
+            EntityId = user.Id,
+            EntityName = typeof(User).Name,
+            Message = "User added",
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow,
         };
 
         await persistence.Users.AddAsync(user);
+        await persistence.Outboxes.AddAsync(outbox);
         await persistence.SaveChangesAsync();
 
-        Response.Headers.Append(HeaderNames.Baggage, "outbox=123456");
+        Response.Headers.Append(HeaderNames.Baggage, $"outbox={outbox.Id}");
 
         return CreatedAtAction(nameof(GetUserDetails), new { id = user.Id }, user);
     }
