@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace ServiceDesk.Tickets.Model;
 
@@ -14,6 +13,5 @@ public record CreateTicketDto
     [Required]
     public Guid ReporterId { get; set; }
     
-    [Required]
-    public required IFormFile Attachment { get; set; }
+    public IFormFile? Attachment { get; set; }
 }

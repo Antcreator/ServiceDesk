@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Tickets.Model;
@@ -23,17 +24,28 @@ public class TicketController(PersistenceContext persistence, DocumentService do
         
         var ticket = new Ticket
         {
+            Id = Guid.NewGuid(),
             Subject = createTicketDto.Subject,
             Description = createTicketDto.Description,
             ReporterId = createTicketDto.ReporterId,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow,
         };
+        var outbox = new Outbox
+        {
+            EntityId = ticket.Id,
+            EntityName = typeof(Ticket).Name,
+            Message = $"{nameof(Ticket)} added",
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow,
+        };
 
         await persistence.Tickets.AddAsync(ticket);
+        await persistence.Outboxes.AddAsync(outbox);
         await persistence.SaveChangesAsync();
-        await documentService.UploadDocument(createTicketDto.Attachment, ticket.Id);
-        await queue.SendMessageAsync(ticket);
+        // await documentService.UploadDocument(createTicketDto.Attachment, ticket.Id);
+
+        Response.Headers.Append(HeaderNames.Baggage, $"outbox={outbox.Id}");
 
         return CreatedAtAction(nameof(GetTicketDetails), new { id = ticket.Id }, ticket);
     }

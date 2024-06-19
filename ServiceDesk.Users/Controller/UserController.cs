@@ -40,7 +40,7 @@ public class UserController(PersistenceContext persistence, PasswordHasherServic
         {
             EntityId = user.Id,
             EntityName = typeof(User).Name,
-            Message = "User added",
+            Message = $"{nameof(User)} added",
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow,
         };
