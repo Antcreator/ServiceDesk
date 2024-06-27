@@ -12,6 +12,16 @@ var connectionString = builder.Configuration.GetConnectionString("Database")
     ?? throw new ArgumentNullException("Database connection string is required");
 
 builder.Services.AddPersistenceContext(connectionString);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("UI", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -22,7 +32,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("UI");
 app.UseRouting();
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
