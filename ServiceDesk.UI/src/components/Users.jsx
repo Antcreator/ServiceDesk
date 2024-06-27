@@ -1,27 +1,17 @@
-import { useState, useEffect } from 'react';
+import { Link, useLoaderData } from 'react-router-dom';
+
+export async function fetchUsers() {
+    const res = await fetch('http://localhost:5406/api/User');
+
+    if (!res.ok) throw new Error('Failed to load users');
+
+    const users = await res.json();
+
+    return { users };
+};
 
 export default function Users() {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const fetchUsers = async () => {
-        try {
-            const res = await fetch('http://localhost:5406/api/User');
-
-            if (!res.ok) throw new Error('Failed to load users');
-
-            const users = await res.json();
-
-            setUsers(users);
-        } 
-        catch (error) { setError(error.message); } 
-        finally { setLoading(false); }
-    };
-
-    useEffect(() => { fetchUsers(); }, []);
-
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>Oops! Something failed - {error}</div>
+    const { users } = useLoaderData();
 
     return (
         <table>
@@ -46,7 +36,9 @@ export default function Users() {
                             {user.email}
                         </td>
                         <td>
-                            <a href="">View</a>
+                            <Link to={`/users/` + user.id}>
+                                View
+                            </Link>
                         </td>
                     </tr>
                 ))}

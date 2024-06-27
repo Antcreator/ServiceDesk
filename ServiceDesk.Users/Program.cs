@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Util.Service;
 
@@ -21,6 +22,10 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
+});
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 var app = builder.Build();

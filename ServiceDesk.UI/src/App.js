@@ -6,7 +6,8 @@ import { Login } from './components/Login';
 import { Register } from './components/Register';
 import Dashboard from './components/Dashboard';
 import Tickets from "./components/Tickets";
-import Users from "./components/Users";
+import Users, { fetchUsers } from "./components/Users";
+import User, { fetchUser } from "./components/User";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,12 @@ const router = createBrowserRouter([
   {
     path: "/users",
     element: <Users />,
+    loader: fetchUsers
+  },
+  {
+    path: "/users/:id",
+    element: <User />,
+    loader: fetchUser
   },
 ]);
 

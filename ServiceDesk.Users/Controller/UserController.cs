@@ -55,12 +55,14 @@ public class UserController(PersistenceContext persistence, PasswordHasherServic
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<Results<Ok<User>, NotFound<string>>> GetUserDetails([FromRoute] Guid id)
+    public async Task<IActionResult> GetUserDetails([FromRoute] Guid id)
     {
-        return await persistence.Users.FindAsync(id) switch
-        {
-            var user when user != null => TypedResults.Ok(user),
-            _ => TypedResults.NotFound($"{nameof(User)} was not found")
-        };
+        var user = await persistence.Users
+            .Include(e => e.Issues)
+            .FirstAsync(e => e.Id.Equals(id));
+
+        return user == null 
+            ? NotFound($"{nameof(User)} was not found") 
+            : Ok(user);
     }
 }
