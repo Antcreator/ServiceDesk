@@ -6,6 +6,7 @@ import { Login } from './components/Login';
 import { Register } from './components/Register';
 import Dashboard from './components/Dashboard';
 import Tickets from "./components/Tickets";
+import Users from "./components/Users";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/tickets",
     element: <Tickets />,
+  },
+  {
+    path: "/users",
+    element: <Users />,
   },
 ]);
 
