@@ -17,6 +17,17 @@ builder.Services.AddHttpClient<DocumentService>(client =>
 });
 builder.Services.AddSingleton<QueueService>();
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("UI", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -27,6 +38,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("UI");
 app.UseRouting();
 app.MapControllers();
 
