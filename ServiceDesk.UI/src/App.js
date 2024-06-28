@@ -5,35 +5,50 @@ import {
 import { Login } from './components/Login';
 import { Register } from './components/Register';
 import Dashboard from './components/Dashboard';
-import Tickets from "./components/Tickets";
+import Tickets, { fetchTickets } from "./components/Tickets";
 import Users, { fetchUsers } from "./components/Users";
 import User, { fetchUser } from "./components/User";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Ticket, { fetchTicket } from "./components/Ticket";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Dashboard />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/login",
     element: <Login />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/register",
     element: <Register />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/tickets",
     element: <Tickets />,
+    errorElement: <ErrorBoundary />,
+    loader: fetchTickets,
+  },
+  {
+    path: "/tickets/:id",
+    element: <Ticket />,
+    errorElement: <ErrorBoundary />,
+    loader: fetchTicket,
   },
   {
     path: "/users",
     element: <Users />,
+    errorElement: <ErrorBoundary />,
     loader: fetchUsers
   },
   {
     path: "/users/:id",
     element: <User />,
+    errorElement: <ErrorBoundary />,
     loader: fetchUser
   },
 ]);

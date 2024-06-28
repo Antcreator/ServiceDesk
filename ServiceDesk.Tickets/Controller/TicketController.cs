@@ -58,7 +58,7 @@ public class TicketController(PersistenceContext persistence) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<Results<Ok<Ticket>, NotFound<string>>> GetTicketDetails([FromRoute] Guid id)
+    public async Task<IActionResult> GetTicketDetails([FromRoute] Guid id)
     {
         var ticket = await persistence.Tickets
             .Include(e => e.Reporter)
@@ -67,6 +67,8 @@ public class TicketController(PersistenceContext persistence) : ControllerBase
             .Where(e => e.Id == id)
             .FirstOrDefaultAsync();
 
-        return ticket == null ? TypedResults.NotFound($"{nameof(Ticket)} not found") : TypedResults.Ok(ticket);
+        return ticket == null 
+            ? NotFound($"{nameof(Ticket)} not found") 
+            : Ok(ticket);
     }
 }

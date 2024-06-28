@@ -1,27 +1,17 @@
-import { useState, useEffect } from 'react';
+import { Link, useLoaderData } from 'react-router-dom';
+
+export async function fetchTickets() {
+    const res = await fetch('http://localhost:5403/api/Ticket');
+
+    if (!res.ok) throw new Error('Failed to load tickets');
+
+    const tickets = await res.json();
+
+    return { tickets };
+}
 
 export default function Tickets() {
-    const [tickets, setTickets] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const fetchTickets = async () => {
-        try {
-            const res = await fetch('http://localhost:5403/api/Ticket');
-
-            if (!res.ok) throw new Error('Failed to load tickets');
-
-            const tickets = await res.json();
-
-            setTickets(tickets);
-        } 
-        catch (error) { setError(error.message); } 
-        finally { setLoading(false); }
-    };
-
-    useEffect(() => { fetchTickets(); }, []);
-
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>Oops! Something failed - {error}</div>
+    const { tickets } = useLoaderData();
 
     return (
         <table>
@@ -42,7 +32,9 @@ export default function Tickets() {
                             {ticket.reporter.firstName} {ticket.reporter.lastName}
                         </td>
                         <td>
-                            <a href="">View</a>
+                            <Link to={`/tickets/` + ticket.id}>
+                                View
+                            </Link>
                         </td>
                     </tr>
                 ))}
