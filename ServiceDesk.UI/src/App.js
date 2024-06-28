@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import axios from 'axios';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
 import Tickets, { fetchTickets } from "./components/Tickets";
@@ -11,6 +12,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Ticket, { fetchTicket } from "./components/Ticket";
 import Root from "./components/Root";
 import Dashboard from "./components/Dashboard";
+import { TicketCreate } from "./components/TicketCreate";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +40,11 @@ const router = createBrowserRouter([
         element: <Tickets />,
         errorElement: <ErrorBoundary />,
         loader: fetchTickets,
+      },
+      {
+        path: "/tickets/create",
+        element: <TicketCreate />,
+        errorElement: <ErrorBoundary />,
       },
       {
         path: "/tickets/:id",

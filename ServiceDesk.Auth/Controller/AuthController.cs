@@ -36,7 +36,8 @@ public class AuthController(PersistenceContext persistence, PasswordHasherServic
         var keyId = jwtSettings.KeyId;
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Email, loginDto.Email),
+            new Claim("email", user.Email),
+            new Claim("sub", user.Id.ToString()),
             new Claim("kid", keyId),
         };
         var rsa = RSA.Create();

@@ -1,3 +1,4 @@
+using Microsoft.IdentityModel.JsonWebTokens;
 using ServiceDesk.Auth.Settings;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Util.Service;
@@ -11,6 +12,8 @@ builder
     {
         config.GetSection(JwtSettings.Section).Bind(settings);
     });
+
+JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("Database") 

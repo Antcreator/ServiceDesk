@@ -1,16 +1,17 @@
 import axios from 'axios';
+import { getSessionToken } from './UserSession';
 
 axios.interceptors.request.use(
-    request => {
-      const token = localStorage.getItem('token');
+  request => {
+    const token = getSessionToken();
+
+    if (token) {
+      request.headers['Authorization'] = 'Bearer ' + token;
+    }
   
-      if (token) {
-        request.headers['Authorization'] = 'Bearer ' + JSON.parse(token);
-      }
-      
-      return request;
-    },
-    error => { Promise.reject(error); }
+    return request;
+  },
+  error => { Promise.reject(error); }
 );
 
 export default axios;

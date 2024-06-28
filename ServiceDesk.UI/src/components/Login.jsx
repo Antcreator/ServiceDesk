@@ -1,19 +1,18 @@
+import { setSessionToken } from "../utils/UserSession";
+import http from "../utils/HttpClient";
+import { useNavigate } from "react-router-dom";
+
 export function Login() {
-    const handleSubmit = (e) => {
+    const navigate = useNavigate();
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const form = e.target;
-        const data = new FormData(form);
-        const payload = Object.fromEntries(data.entries());
+        const data = Object.fromEntries(new FormData(form).entries());
+        const { data: token } = await http.post('http://localhost:5402/api/Auth/Login', data);
 
-        fetch('http://localhost:5402/api/Auth/Login', { 
-            method: form.method, 
-            body: JSON.stringify(payload),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-        });
+        setSessionToken(token);
+        navigate('/tickets');
     };
 
     return (
