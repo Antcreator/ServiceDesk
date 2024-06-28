@@ -1,11 +1,8 @@
+import http from '../utils/HttpClient';
 import { Link, useLoaderData } from 'react-router-dom';
 
 export async function fetchTickets() {
-    const res = await fetch('http://localhost:5403/api/Ticket');
-
-    if (!res.ok) throw new Error('Failed to load tickets');
-
-    const tickets = await res.json();
+    const { data: tickets } = await http.get('http://localhost:5403/api/Ticket');
 
     return { tickets };
 }
