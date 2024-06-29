@@ -71,4 +71,23 @@ public class DocumentController(PersistenceContext persistence, IWebHostEnvironm
 
         return PhysicalFile(path, "application/octet-stream", document.File);
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteDocument([FromRoute] Guid id)
+    {
+        var document = await persistence.Documents.FindAsync(id);
+
+        if (document == null)
+        {
+            return NotFound($"{nameof(Document)} not found");
+        }
+
+        var path = Path.Combine(env.WebRootPath, "uploads", document.File);
+        
+        System.IO.File.Delete(path);
+        persistence.Documents.Remove(document);
+        await persistence.SaveChangesAsync();
+
+        return Ok($"{nameof(Document)} deleted");
+    }
 }
