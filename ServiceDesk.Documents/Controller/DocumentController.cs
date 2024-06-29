@@ -27,18 +27,18 @@ public class DocumentController(PersistenceContext persistence, IWebHostEnvironm
             return ValidationProblem(ModelState);
         }
 
+        var file = Path.GetRandomFileName() + Path.GetExtension(createDocumentDto.Attachment.FileName);
         var document = new Document
         {
             TicketId = createDocumentDto.TicketId,
             Title = createDocumentDto.Attachment.FileName,
-            File = Path.GetRandomFileName(),
+            File = file,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow,
         };
 
-        var file = document.File + Path.GetExtension(createDocumentDto.Attachment.FileName);
-        var upload = Path.Combine(env.WebRootPath, "uploads", file);
-        using var stream = System.IO.File.Create(upload);
+        var path = Path.Combine(env.WebRootPath, "uploads", file);
+        using var stream = System.IO.File.Create(path);
 
         await createDocumentDto.Attachment.CopyToAsync(stream);
         await persistence.Documents.AddAsync(document);
@@ -55,5 +55,20 @@ public class DocumentController(PersistenceContext persistence, IWebHostEnvironm
             var document when document != null => TypedResults.Ok(document),
             _ => TypedResults.NotFound($"{nameof(Document)} not found")
         };
+    }
+
+    [HttpGet("{id:guid}/download")]
+    public async Task<IActionResult> DownloadDocument([FromRoute] Guid id)
+    {
+        var document = await persistence.Documents.FindAsync(id);
+
+        if (document == null)
+        {
+            return NotFound($"{nameof(Document)} not found");
+        }
+
+        var path = Path.Combine(env.WebRootPath, "uploads", document.File);
+
+        return PhysicalFile(path, "application/octet-stream", document.File);
     }
 }
