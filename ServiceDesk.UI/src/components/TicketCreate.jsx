@@ -17,6 +17,7 @@ export function TicketCreate() {
         <form method="post" onSubmit={handleSubmit}>
             <input type="text" name="subject" placeholder="Subject" />
             <input type="text" name="description" placeholder="Description" />
+            <input type="file" name="attachment" />
             <button type="submit">Submit</button>
         </form>
     );

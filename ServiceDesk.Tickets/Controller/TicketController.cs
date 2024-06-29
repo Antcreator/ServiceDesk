@@ -5,12 +5,13 @@ using Microsoft.Net.Http.Headers;
 using ServiceDesk.Data.Context;
 using ServiceDesk.Data.Model;
 using ServiceDesk.Tickets.Model;
+using ServiceDesk.Tickets.Service;
 
 namespace ServiceDesk.Tickets.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TicketController(PersistenceContext persistence) : ControllerBase
+public class TicketController(PersistenceContext persistence, DocumentService documentService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetTicketList()
@@ -51,6 +52,11 @@ public class TicketController(PersistenceContext persistence) : ControllerBase
         await persistence.Tickets.AddAsync(ticket);
         await persistence.Outboxes.AddAsync(outbox);
         await persistence.SaveChangesAsync();
+
+        if (createTicketDto.Attachment != null)
+        {
+            await documentService.UploadDocument(createTicketDto.Attachment, ticket.Id);
+        }
 
         Response.Headers.Append(HeaderNames.Baggage, $"outbox={outbox.Id}");
 

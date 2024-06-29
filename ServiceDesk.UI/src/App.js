@@ -2,7 +2,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import axios from 'axios';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
 import Tickets, { fetchTickets } from "./components/Tickets";
